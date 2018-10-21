@@ -6,14 +6,18 @@ import java.sql.ResultSet;
 
 public class JdbcTemplate {
 
-	public void executeUpdate(String sql, PreparedStatementSetter pss) throws Exception {
+	public void executeUpdate(String sql, Object... parameters) throws Exception {
 		Connection conn = null;
 		PreparedStatement psmt = null;
 		
 		try {
 			conn = ConnectionManager.getConnection();
 			psmt = conn.prepareStatement(sql);
-			pss.setParameters(psmt);
+			
+			for(int i = 0; i < parameters.length; i++) {
+				psmt.setObject(i+1, parameters[i]);
+			}
+			
 			psmt.executeUpdate();
 
 		} finally {
