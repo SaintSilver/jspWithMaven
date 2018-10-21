@@ -30,8 +30,8 @@ public class JdbcTemplate {
 		}
 	}
 
-	public <T> T executeQuery(String sql, PreparedStatementSetter pss, RowMapper<T> rm) throws Exception {
-		Connection conn = null;
+	public <T> T executeQuery(String sql, RowMapper<T> rm, Object... parameters) throws Exception {
+		Connection conn = null; 
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
 
@@ -39,7 +39,10 @@ public class JdbcTemplate {
 			conn = ConnectionManager.getConnection();
 			psmt = conn.prepareStatement(sql);
 			
-			pss.setParameters(psmt);
+			for(int i = 0; i < parameters.length; i++) {
+				psmt.setObject(i+1, parameters[i]);
+			}
+			
 			rs = psmt.executeQuery();
 			
 			if (!rs.next()) {
