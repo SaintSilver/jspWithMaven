@@ -2,12 +2,17 @@ package com.kutar.user;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
+
+import java.util.List;
 
 public class UserDAOTest {
 
 	private UserDAO userDao;
+	 private static final Logger logger = LoggerFactory.getLogger(UserDAOTest.class);
 	
 	@Before
 	public void init() throws Exception {
@@ -44,6 +49,13 @@ public class UserDAOTest {
 	public void 존재하지_않는_사용자_조회() throws Exception{
 		User dbUser = userDao.findByUserId(UserTest.TEST_USER.getUserId());
 		assertNull(dbUser);
+	}
+	
+	@Test
+	public void findUsers() throws Exception{
+		List<User> users = userDao.findUsers();
+		assertTrue(users.size() > 0);
+		logger.debug("Users : {}", users);
 	}
 
 }

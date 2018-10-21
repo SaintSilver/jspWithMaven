@@ -2,6 +2,7 @@ package com.kutar.user;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.kutar.support.JdbcTemplate;
 import com.kutar.support.RowMapper;
@@ -22,7 +23,11 @@ public class UserDAO {
 
 			@Override
 			public User mapRow(ResultSet rs) throws SQLException {
-				return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+				return new User(
+						rs.getString(1), 
+						rs.getString(2), 
+						rs.getString(3), 
+						rs.getString(4));
 			}
 		};
 
@@ -40,5 +45,18 @@ public class UserDAO {
 
 		String sql = "update users set password=?,name=?,email=? where userId=?";
 		template.executeUpdate(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
+	}
+
+	public List<User> findUsers() throws Exception{
+		RowMapper<User> rm = new RowMapper<User>() {
+
+			@Override
+			public User mapRow(ResultSet rs) throws SQLException {
+				return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+			}
+		};
+
+		String sql = "select * from users";
+		return template.executeQueryList(sql, rm);
 	}
 }
