@@ -3,10 +3,11 @@ package com.kutar.support;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class JdbcTemplate {
 
-	public void executeUpdate(String sql, Object... parameters) throws Exception {
+	public void executeUpdate(String sql, PreparedStatementSetter pss) throws Exception {
 		Connection conn = null;
 		PreparedStatement psmt = null;
 		
@@ -14,9 +15,7 @@ public class JdbcTemplate {
 			conn = ConnectionManager.getConnection();
 			psmt = conn.prepareStatement(sql);
 			
-			for(int i = 0; i < parameters.length; i++) {
-				psmt.setObject(i+1, parameters[i]);
-			}
+			pss.setParameters(psmt);
 			
 			psmt.executeUpdate();
 
@@ -29,8 +28,13 @@ public class JdbcTemplate {
 			}
 		}
 	}
+	
+	public void executeUpdate(String sql, Object... parameters) throws Exception {
+		executeUpdate(sql, createPsmtSetter(parameters));
+	}
+	
 
-	public <T> T executeQuery(String sql, RowMapper<T> rm, Object... parameters) throws Exception {
+	public <T> T executeQuery(String sql, RowMapper<T> rm, PreparedStatementSetter pss) throws Exception {
 		Connection conn = null; 
 		PreparedStatement psmt = null;
 		ResultSet rs = null;
@@ -38,10 +42,7 @@ public class JdbcTemplate {
 		try {
 			conn = ConnectionManager.getConnection();
 			psmt = conn.prepareStatement(sql);
-			
-			for(int i = 0; i < parameters.length; i++) {
-				psmt.setObject(i+1, parameters[i]);
-			}
+			pss.setParameters(psmt);
 			
 			rs = psmt.executeQuery();
 			
@@ -61,6 +62,21 @@ public class JdbcTemplate {
 				conn.close();
 			}
 		}
+	}
+	
+	public <T> T executeQuery(String sql, RowMapper<T> rm, Object... parameters) throws Exception {
+		return executeQuery(sql, rm, createPsmtSetter(parameters));
+	}
+
+	private PreparedStatementSetter createPsmtSetter(Object... parameters) {
+		return new PreparedStatementSetter() {
+			@Override
+			public void setParameters(PreparedStatement psmt) throws SQLException {
+				for(int i = 0; i < parameters.length; i++) {
+					psmt.setObject(i+1, parameters[i]);
+				}				
+			}
+		};
 	}
 	
 }
