@@ -20,14 +20,15 @@ import org.slf4j.LoggerFactory;
 import com.kutar.support.MyValidatorFactory;
 
 @WebServlet("/users/create")
-public class CreateUserServlet extends HttpServlet{
-	 private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
+public class CreateUserServlet extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		
-		//bean mapping
+
+		// bean mapping
 		User user = new User();
 		try {
 			BeanUtilsBean.getInstance().populate(user, request.getParameterMap());
@@ -35,28 +36,25 @@ public class CreateUserServlet extends HttpServlet{
 			e1.printStackTrace();
 			throw new ServletException(e1);
 		}
-		
-		//유효성 검사
+
+		// 유효성 검사
 		Validator validator = MyValidatorFactory.createValidator();
 		Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
-		if(constraintViolations.size() > 0) {
-			request.setAttribute("user", user); //입력한 데이터 유지
+		if (constraintViolations.size() > 0) {
+			request.setAttribute("user", user); // 입력한 데이터 유지
 			String errorMessage = constraintViolations.iterator().next().getMessage();
 			forwardJSP(request, response, errorMessage);
 			return;
 		}
-		
+
 		UserDAO userDAO = new UserDAO();
-		try {
-			userDAO.addUser(user);
-			logger.debug("User : {}", user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		userDAO.addUser(user);
 		
+		logger.debug("User : {}", user);
+
 		response.sendRedirect("/");
 	}
-	
+
 	private void forwardJSP(HttpServletRequest request, HttpServletResponse response, String errorMessage)
 			throws ServletException, IOException {
 		request.setAttribute("errorMessage", errorMessage);

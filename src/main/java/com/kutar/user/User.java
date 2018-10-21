@@ -126,12 +126,7 @@ public class User {
 
 	public static boolean login(String userId, String password) throws UserNotFoundException, PasswordMissmatchException {
 		UserDAO userDAO = new UserDAO();
-		User user = null;
-		try {
-			user = userDAO.findByUserId(userId);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		User user = userDAO.findByUserId(userId);
 		
 		if(user == null) {
 			throw new UserNotFoundException();

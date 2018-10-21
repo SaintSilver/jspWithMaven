@@ -1,4 +1,4 @@
-package com.kutar.support;
+package com.kutar.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

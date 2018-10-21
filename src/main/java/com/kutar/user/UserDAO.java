@@ -4,25 +4,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.kutar.support.JdbcTemplate;
-import com.kutar.support.RowMapper;
+import com.kutar.jdbc.JdbcTemplate;
+import com.kutar.jdbc.RowMapper;
 
 public class UserDAO {
 
 	private JdbcTemplate template = new JdbcTemplate();
 
-	public void addUser(User user) throws Exception {
+	public void addUser(User user) {
 
 		String sql = "insert into users values(?,?,?,?)";
 		template.executeUpdate(sql, user.getUserId(), user.getPassword(), user.getName(), user.getEmail());
 	}
 
-	public User findByUserId(String userId) throws Exception {
+	public User findByUserId(String userId) {
 
 		RowMapper<User> rm = new RowMapper<User>() {
 
 			@Override
-			public User mapRow(ResultSet rs) throws SQLException {
+			public User mapRow(ResultSet rs) throws SQLException{
 				return new User(
 						rs.getString(1), 
 						rs.getString(2), 
@@ -35,19 +35,19 @@ public class UserDAO {
 		return template.executeQuery(sql, rm, userId);
 	}
 
-	public void removeUser(String userId) throws Exception {
+	public void removeUser(String userId) {
 
 		String sql = "delete from users where userId =?";
 		template.executeUpdate(sql, userId);
 	}
 
-	public void updateUser(User user) throws Exception {
+	public void updateUser(User user) {
 
 		String sql = "update users set password=?,name=?,email=? where userId=?";
 		template.executeUpdate(sql, user.getPassword(), user.getName(), user.getEmail(), user.getUserId());
 	}
 
-	public List<User> findUsers() throws Exception{
+	public List<User> findUsers(){
 		RowMapper<User> rm = new RowMapper<User>() {
 
 			@Override

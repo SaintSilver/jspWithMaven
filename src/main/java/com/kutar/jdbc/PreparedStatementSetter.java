@@ -1,4 +1,4 @@
-package com.kutar.support;
+package com.kutar.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

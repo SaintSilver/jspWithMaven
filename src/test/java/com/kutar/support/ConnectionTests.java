@@ -6,6 +6,8 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
+import com.kutar.jdbc.ConnectionManager;
+
 public class ConnectionTests {
 
 	@Test
