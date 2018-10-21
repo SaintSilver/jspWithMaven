@@ -1,4 +1,4 @@
-package com.kutar.user;
+package com.kutar.user.web;
 
 import java.io.IOException;
 
@@ -12,6 +12,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.kutar.user.User;
+import com.kutar.user.UserDAO;
+
+import core.support.SessionUtils;
 
 @WebServlet("/users/updateForm")
 public class UpdateFormUserServlet extends HttpServlet {

@@ -1,4 +1,4 @@
-package com.kutar.user;
+package com.kutar.user.web;
 
 import java.io.IOException;
 
@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.kutar.user.PasswordMissmatchException;
+import com.kutar.user.User;
+import com.kutar.user.UserNotFoundException;
 
 @WebServlet("/users/login")
 public class LoginServlet extends HttpServlet {

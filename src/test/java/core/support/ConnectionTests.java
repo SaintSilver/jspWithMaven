@@ -1,4 +1,4 @@
-package com.kutar.support;
+package core.support;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -6,7 +6,7 @@ import java.sql.Connection;
 
 import org.junit.Test;
 
-import com.kutar.jdbc.ConnectionManager;
+import core.jdbc.ConnectionManager;
 
 public class ConnectionTests {
 

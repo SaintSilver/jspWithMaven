@@ -1,4 +1,4 @@
-package com.kutar.user;
+package com.kutar.user.web;
 
 import java.io.IOException;
 

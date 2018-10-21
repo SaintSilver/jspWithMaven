@@ -1,4 +1,4 @@
-package com.kutar.user;
+package com.kutar.user.web;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,29 +10,28 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.kutar.support.MyValidatorFactory;
+import com.kutar.user.User;
+import com.kutar.user.UserDAO;
 
-@WebServlet("/users/update")
-public class UpdateUserServlet extends HttpServlet {
-	
+import core.support.MyValidatorFactory;
+
+@WebServlet("/users/create")
+public class CreateUserServlet extends HttpServlet {
+	private static final Logger logger = LoggerFactory.getLogger(CreateUserServlet.class);
+
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		HttpSession session = request.getSession();
-		
-		String sessionUserId = SessionUtils.getStringValue(session, LoginServlet.SESSION_USER_ID);
-		if(sessionUserId == null) {
-			response.sendRedirect("/");
-			return;
-		}
-		
-		//bean mapping
+
+		// bean mapping
 		User user = new User();
 		try {
 			BeanUtilsBean.getInstance().populate(user, request.getParameterMap());
@@ -40,30 +39,25 @@ public class UpdateUserServlet extends HttpServlet {
 			e1.printStackTrace();
 			throw new ServletException(e1);
 		}
-		
-		//로그인한 session과 업데이트하려는 id 일치여부
-		if(!user.isSameUser(sessionUserId)) {
-			response.sendRedirect("/");
-			return;
-		}
-		
-		//유효성 검사
+
+		// 유효성 검사
 		Validator validator = MyValidatorFactory.createValidator();
 		Set<ConstraintViolation<User>> constraintViolations = validator.validate(user);
-		if(constraintViolations.size() > 0) {
-			request.setAttribute("isUpdate", true);
-			request.setAttribute("user", user); //입력한 데이터 유지
+		if (constraintViolations.size() > 0) {
+			request.setAttribute("user", user); // 입력한 데이터 유지
 			String errorMessage = constraintViolations.iterator().next().getMessage();
 			forwardJSP(request, response, errorMessage);
 			return;
 		}
-		
+
 		UserDAO userDAO = new UserDAO();
-		userDAO.updateUser(user);
+		userDAO.addUser(user);
 		
+		logger.debug("User : {}", user);
+
 		response.sendRedirect("/");
 	}
-	
+
 	private void forwardJSP(HttpServletRequest request, HttpServletResponse response, String errorMessage)
 			throws ServletException, IOException {
 		request.setAttribute("errorMessage", errorMessage);

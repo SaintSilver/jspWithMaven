@@ -1,4 +1,4 @@
-package com.kutar.support;
+package core.support;
 
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;

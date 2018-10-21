@@ -1,4 +1,4 @@
-package com.kutar.user;
+package core.support;
 
 import javax.servlet.http.HttpSession;
 

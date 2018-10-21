@@ -1,4 +1,4 @@
-package com.kutar.user;
+package com.kutar.user.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.kutar.user.User;
+import com.kutar.user.UserDAO;
 
 @WebServlet("/api/users/find")
 public class ApiFindUserServlet extends HttpServlet {
